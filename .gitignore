@@ -1,2 +1,6 @@
-﻿main_app/__pycache__
+﻿# environment
+*.env
+main_app/__pycache__
+
+# database
 *.sqlite3
