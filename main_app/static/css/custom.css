@@ -1,0 +1,14 @@
+@keyframes show-toast{
+    0% {bottom: -100%;} /* แสดงที่ด้านล่างนอกหน้าจอ (bottom: -100%) */
+    20% {bottom: 50px;} /* เลื่อนขึ้นมาที่ตำแหน่ง 100px จากด้านล่าง */
+    80% {bottom: 50px;} /* คงอยู่ที่ตำแหน่ง 100px จากด้านล่าง */
+    100% {bottom: -100%;} /* เลื่อนกลับลงไปด้านล่างนอกหน้าจอ */
+}
+
+.show-notification {
+    position: fixed;
+    bottom: 100%;
+    right: 20px;
+    animation-name: show-toast;
+    animation-duration: 8s;
+}
