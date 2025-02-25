@@ -12,7 +12,7 @@ def post_save_create_profile_receiver(sender, instance, created, **kwargs):
     print(created)
     if created: # ถ้าไม่มี pk หรือ pk เป็น None แสดงว่าเป็นการบันทึกครั้งแรก Django จะกำหนด created = True
         UserProfile.objects.create(user=instance)
-        print('user profile created')
+        # print('user profile created')
     else: # ถ้ามี pk อยู่แล้ว แสดงว่าเป็นการอัปเดต Django จะกำหนด created = False
         try:
             profile = UserProfile.objects.get(user=instance)
@@ -20,9 +20,9 @@ def post_save_create_profile_receiver(sender, instance, created, **kwargs):
         except:
             # create user profile if not exist
             UserProfile.objects.create(user=instance)
-            print('Profile not exist, created one')
-        print('user updated')
+            # print('Profile not exist, created one')
+        # print('user updated')
 
 @receiver(pre_save, sender=User)
 def pre_save_create_profile_receiver(sender, instance, **kwargs):
-    print(instance.username, 'this user is saved')
+    pass
