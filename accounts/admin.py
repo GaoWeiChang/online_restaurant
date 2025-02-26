@@ -4,7 +4,7 @@ from .models import User, UserProfile
 
 # Register your models here.
 
-class CustomUserAdmin(UserAdmin):
+class CustomUserAdmin(UserAdmin): # UserAdmin เป็นคลาสพิเศษที่ Django ออกแบบมาเฉพาะสำหรับการจัดการโมเดล User
     list_display = ('email', 'first_name', 'last_name', 'username', 'role', 'is_active')
     ordering = ('-date_joined', )
     filter_horizontal = ()

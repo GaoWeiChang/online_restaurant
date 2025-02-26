@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from vendor.models import Vendor
 
-class VendorAdmin(admin.ModelAdmin): # idk why it different with accounts/admin.py
+class VendorAdmin(admin.ModelAdmin): # ใช้สำหรับโมเดล Vendor ซึ่งเป็นโมเดลปกติที่สร้างขึ้นเอง
     list_display = ('user', 'vendor_name', 'is_approved', 'created_at')
     list_display_links = ('user', 'vendor_name')
 
