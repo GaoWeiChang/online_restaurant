@@ -1,14 +1,33 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages, auth
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.exceptions import PermissionDenied
 from accounts.forms import UserForm
 from accounts.models import User, UserProfile
+from accounts.utils import detectUser
 from vendor.forms import VendorForm
 
-# Create your views here.
+# restrict the restaurant from accessing the customer page
+def check_role_restaurant(user):
+    if user.role == 1:
+        return True
+    else:
+        raise PermissionDenied # when permission denied occur, django will automatically reach to 403.html
+
+# restrict the customer from accessing the restaurant page
+def check_role_customer(user):
+    if user.role == 2:
+        return True
+    else:
+        raise PermissionDenied
 
 def registerUser(request):
-    if request.method == 'POST':
+    # prevent logged in user go to login/register page
+    if request.user.is_authenticated: 
+        messages.warning(request, 'You are already logged in!')
+        return redirect('myAccount')
+    elif request.method == 'POST':
         form = UserForm(request.POST)
         if (form.is_valid()):
             ''' create user using form '''
@@ -42,7 +61,11 @@ def registerUser(request):
     return render(request, 'accounts/registerUser.html', context)
 
 def registerVendor(request):
-    if request.method == 'POST':
+    # prevent logged in user go to login/register page
+    if request.user.is_authenticated: 
+        messages.warning(request, 'You are already logged in!')
+        return redirect('myAccount')
+    elif request.method == 'POST':
         # stored data and create user
         form = UserForm(request.POST)
         v_form = VendorForm(request.POST, request.FILES)
@@ -77,7 +100,11 @@ def registerVendor(request):
     return render(request, 'accounts/registerVendor.html', context)
 
 def login(request):
-    if request.method == 'POST':
+    # prevent logged in user go to login/register page
+    if request.user.is_authenticated: 
+        messages.warning(request, 'You are already logged in!')
+        return redirect('myAccount')
+    elif request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
 
@@ -85,7 +112,7 @@ def login(request):
         if(user):
             auth.login(request, user)
             messages.success(request, 'You are now logged in.')
-            return redirect('dashboard')
+            return redirect('myAccount')
         else:
             messages.error(request, 'Invalid account')
             return redirect('login')
@@ -97,5 +124,19 @@ def logout(request):
     messages.info(request, 'You are logged out.')
     return redirect('login')
 
-def dashboard(request):
-    return render(request, 'accounts/dashboard.html')
+# check user role and redirect to customer or restaurant dashboard
+@login_required(login_url='login')
+def myAccount(request):
+    user = request.user # person who logged in only
+    redirectUrl = detectUser(user)
+    return redirect(redirectUrl)
+
+@login_required(login_url='login')
+@user_passes_test(check_role_customer)
+def customerDashboard(request):
+    return render(request, 'accounts/customerDashboard.html')
+
+@login_required(login_url='login')
+@user_passes_test(check_role_restaurant)
+def restaurantDashboard(request):
+    return render(request, 'accounts/restaurantDashboard.html')
