@@ -169,3 +169,12 @@ def customerDashboard(request):
 @user_passes_test(check_role_restaurant)
 def restaurantDashboard(request):
     return render(request, 'accounts/restaurantDashboard.html')
+ 
+def forgot_password(request):
+    return render(request, 'accounts/forgot_password.html')
+
+def reset_password(request):
+    return render(request, 'accounts/reset_password.html')
+
+def reset_password_validate(request, uidb64, token):
+    return
