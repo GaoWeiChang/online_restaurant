@@ -149,5 +149,6 @@ MESSAGE_TAGS = {
 EMAIL_HOST = config('EMAIL_HOST') # smtp server, 
 EMAIL_PORT = config('EMAIL_PORT', cast=int) # 587 สำหรับ TLS หรือ 465 สำหรับ SSL
 EMAIL_HOST_USER = config('EMAIL_HOST_USER') # actual email
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') # actual password
+EMAIL_HOST_PASSWORD = "icxxjtwimlyvppmr"
 EMAIL_USE_TLS = True # เชื่อมต่อกับเซิร์ฟเวอร์ SMTP จะใช้ TLS
+DEFAULT_FROM_EMAIL = "FoodOnline Admin <a64737287@gmail.com>"
