@@ -143,3 +143,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MESSAGE_TAGS = {
     messages.ERROR: "danger"
 }
+
+
+# email configuration
+EMAIL_HOST = config('EMAIL_HOST') # smtp server, 
+EMAIL_PORT = config('EMAIL_PORT', cast=int) # 587 สำหรับ TLS หรือ 465 สำหรับ SSL
+EMAIL_HOST_USER = config('EMAIL_HOST_USER') # actual email
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') # actual password
+EMAIL_USE_TLS = True # เชื่อมต่อกับเซิร์ฟเวอร์ SMTP จะใช้ TLS
