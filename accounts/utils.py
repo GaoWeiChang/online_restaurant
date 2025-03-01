@@ -20,13 +20,12 @@ def detectUser(user):
         redirectUrl = '/admin'
         return redirectUrl
     
-def send_verification_email(request, user):
+def send_verification_email(request, user, mail_subject, email_template):
     from_email = settings.DEFAULT_FROM_EMAIL
     current_site = get_current_site(request) # ดึงข้อมูลของเว็บไซต์ปัจจุบัน (โดเมน) จากคำขอที่ส่งมา, เพื่อสร้าง URL ที่ถูกต้องในอีเมล์ยืนยัน
-    mail_subject = 'Please activate you account' # topic of email
     
     # use template HTML เพื่อสร้างเนื้อหาอีเมล์
-    message = render_to_string('accounts/emails/account_verification_email.html', # UI site
+    message = render_to_string(email_template, # UI site
         { 
             'user': user,
             'domain': current_site,
