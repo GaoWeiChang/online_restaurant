@@ -9,6 +9,7 @@ from django.contrib.auth.tokens import default_token_generator
 from accounts.utils import detectUser, send_verification_email
 from django.utils.http import urlsafe_base64_decode
 from vendor.forms import VendorForm
+from vendor.models import Vendor
 
 # restrict the restaurant from accessing the customer page
 def check_role_restaurant(user):
@@ -172,7 +173,11 @@ def customerDashboard(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_restaurant)
 def restaurantDashboard(request):
-    return render(request, 'accounts/restaurantDashboard.html')
+    vendor = Vendor.objects.get(user=request.user)
+    context = {
+        'vendor': vendor
+    }
+    return render(request, 'accounts/restaurantDashboard.html', context)
  
 def forgot_password(request):
     if request.method == 'POST':
