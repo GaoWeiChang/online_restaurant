@@ -173,11 +173,7 @@ def customerDashboard(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_restaurant)
 def restaurantDashboard(request):
-    vendor = Vendor.objects.get(user=request.user)
-    context = {
-        'vendor': vendor
-    }
-    return render(request, 'accounts/restaurantDashboard.html', context)
+    return render(request, 'accounts/restaurantDashboard.html')
  
 def forgot_password(request):
     if request.method == 'POST':

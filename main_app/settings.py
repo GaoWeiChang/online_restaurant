@@ -62,11 +62,14 @@ TEMPLATES = [
         'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
+            # ทำหน้าที่เพิ่มข้อมูลให้กับ context ที่จะถูกส่งไปยังทุก template โดยอัตโนมัติ โดยไม่ต้องส่งข้อมูลซ้ำๆ ในทุก view
+            # ทำให้ข้อมูลที่กำหนดปรากฏในทุกๆ template HTML ที่ถูก render โดยไม่ต้องส่งข้อมูลเหล่านี้ซ้ำๆ ในแต่ละ view
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'accounts.context_processors.get_restaurant',
             ],
         },
     },
