@@ -70,6 +70,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'accounts.context_processors.get_restaurant',
+                'accounts.context_processors.get_google_api',
             ],
         },
     },
@@ -155,3 +156,6 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER') # actual email
 EMAIL_HOST_PASSWORD = "icxxjtwimlyvppmr"
 EMAIL_USE_TLS = True # เชื่อมต่อกับเซิร์ฟเวอร์ SMTP จะใช้ TLS
 DEFAULT_FROM_EMAIL = "FoodOnline Admin <a64737287@gmail.com>"
+
+# Google API key
+GOOGLE_API_KEY = config('GOOGLE_API_KEY')

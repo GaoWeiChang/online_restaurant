@@ -1,4 +1,6 @@
+from django.conf import settings # type: ignore
 from vendor.models import Vendor
+
 
 # ทำหน้าที่เพิ่มข้อมูลให้กับ context ที่จะถูกส่งไปยังทุก template โดยอัตโนมัติ โดยไม่ต้องส่งข้อมูลซ้ำๆ ในทุก view
 def get_restaurant(request):
@@ -7,3 +9,6 @@ def get_restaurant(request):
     except:
         vendor = None
     return dict(vendor=vendor)
+
+def get_google_api(request):
+    return {'GOOGLE_API_KEY': settings.GOOGLE_API_KEY}

@@ -16,6 +16,7 @@ class Vendor(models.Model): # Vendor inherited from models.Model
     def __str__(self):
         return self.vendor_name
     
+    # use *args and **kwargs to save parameter in save function
     def save(self, *args, **kwargs):
         if self.pk is not None:
             # Update object
