@@ -14,6 +14,7 @@ autocomplete.addListener('place_changed', onPlaceChanged);
 
 function onPlaceChanged (){
     var place = autocomplete.getPlace();
+    // console.log(place) // show all place details, print and click inspect in UI
 
     // User did not select the prediction. Reset the input field or alert()
     if (!place.geometry){
@@ -37,6 +38,32 @@ function onPlaceChanged (){
             // console.log("long",longtitude)
             $('#id_latitude').val(latitude)
             $('#id_longtitude').val(longtitude)
+            $('#id_address').val(address)
         }
-    })    
+    });
+
+    // loop through the address components and assign other address data
+    // console.log(place.address_components);
+    for(var i=0; i<place.address_components.length; i++){
+        for(var j=0; j<place.address_components[i].types.length; j++){
+            // get country
+            if(place.address_components[i].types[j] == 'country'){
+                $('#id_country').val(place.address_components[i].long_name);
+            }
+            // get state (in this case district)
+            if(place.address_components[i].types[j] == 'administrative_area_level_2'){
+                $('#id_state').val(place.address_components[i].long_name);
+            }
+            // get city
+            if(place.address_components[i].types[j] == 'administrative_area_level_1'){
+                $('#id_city').val(place.address_components[i].long_name);
+            }
+            // zipcode
+            if(place.address_components[i].types[j] == 'postal_code'){
+                $('#id_pin_code').val(place.address_components[i].long_name);
+            }else{
+                $('#id_pin_code').val("");
+            }
+        }
+    }
 }
