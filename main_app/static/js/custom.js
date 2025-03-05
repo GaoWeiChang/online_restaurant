@@ -36,7 +36,9 @@ function onPlaceChanged (){
 
             // console.log("lat",latitude)
             // console.log("long",longtitude)
-            $('#id_latitude').val(latitude)
+
+            // ใช้ jQuery เพื่อกำหนดค่าให้กับ input field 
+            $('#id_latitude').val(latitude) // $('#id').val(value)
             $('#id_longtitude').val(longtitude)
             $('#id_address').val(address)
         }

@@ -37,3 +37,7 @@ def restaurant_profile(request):
         'vendor': vendor
     }
     return render(request, 'restaurant/restaurant_profile.html', context)
+
+
+def menu_builder(request):
+    return render(request, 'restaurant/menu_builder.html')
