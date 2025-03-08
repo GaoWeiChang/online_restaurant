@@ -44,6 +44,8 @@ function onPlaceChanged (){
         }
     });
 
+    console.log(place.address_components)
+
     // loop through the address components and assign other address data
     // console.log(place.address_components);
     for(var i=0; i<place.address_components.length; i++){
