@@ -3,11 +3,13 @@ from django.shortcuts import redirect, render
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
+from django.template.defaultfilters import slugify
+from django.utils.http import urlsafe_base64_decode
+
 from accounts.forms import UserForm
 from accounts.models import User, UserProfile
 from django.contrib.auth.tokens import default_token_generator
 from accounts.utils import detectUser, send_verification_email
-from django.utils.http import urlsafe_base64_decode
 from vendor.forms import VendorForm
 from vendor.models import Vendor
 
@@ -89,6 +91,11 @@ def registerVendor(request):
             user.save()
             vendor = v_form.save(commit=False) # don't save immediately, due to assign user data
             vendor.user = user
+            
+            # auto slug name
+            vendor_name = v_form.cleaned_data['vendor_name']
+            vendor.vendor_slug = slugify(vendor_name)+'-'+str(user.id)
+            
             user_profile = UserProfile.objects.get(user=user)
             vendor.user_profile = user_profile
             vendor.save()

@@ -71,3 +71,24 @@ function onPlaceChanged (){
         }
     }
 }
+
+$(document).ready(function(){
+    $('.add_to_cart').on('click', function(e){
+        e.preventDefault(); // ป้องกันการทำงานปกติของลิงก์ (เช่น การนำทางไปยัง URL ที่ระบุใน href) เมื่อมีการคลิก
+        
+        // data-* ใช้เพื่อเก็บข้อมูลส่วนตัวหรือข้อมูลเพิ่มเติมในองค์ประกอบ HTML
+        food_id = $(this).attr('data-id'); // get data-id attrbute
+        url = $(this).attr('data-url');
+        data = {
+            food_id: food_id,
+        }
+        $.ajax({
+            type: 'GET',
+            url: url,
+            data: data,
+            success: function(response){
+                alert(response);
+            }
+        })
+    })
+})
