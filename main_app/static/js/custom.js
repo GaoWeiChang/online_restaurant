@@ -73,6 +73,7 @@ function onPlaceChanged (){
 }
 
 $(document).ready(function(){
+    // click add into shopping cart button 
     $('.add_to_cart').on('click', function(e){
         e.preventDefault(); // ป้องกันการทำงานปกติของลิงก์ (เช่น การนำทางไปยัง URL ที่ระบุใน href) เมื่อมีการคลิก
         
@@ -87,8 +88,22 @@ $(document).ready(function(){
             url: url,
             data: data,
             success: function(response){
-                console.log(response)
+                // console.log(response.cart_counter['cart_count'])
+                $('#cart_counter').html(response.cart_counter['cart_count']); // print to console and click inspect to see cart_counter
+                $('#qty-'+food_id).html(response.qty);
             }
         })
     })
-})
+
+    // place the cart item quantity on load
+    $('.item_qty').each(function(){
+        var _id = $(this).attr('id')
+        var _qty = $(this).attr('data-qty')
+        /* 
+            .html()) จะดึงเนื้อหา HTML ภายในองค์ประกอบที่เลือก
+            .html(_qty) กำหนดให้เนื้อหาภายในองค์ประกอบมีค่าเท่ากับ _qty
+        */
+        $('#'+_id).html(_qty) // เปลี่ยนเนื้อหาของ element ที่มี id เดียวกัน 
+        // ex. "#qty-101" เป็น CSS selector ที่เลือกองค์ประกอบที่มี id="qty-101" เเล้วกำหนดให้เนื้อหาภายในองค์ประกอบมีค่าเท่ากับ _qty
+    })
+});

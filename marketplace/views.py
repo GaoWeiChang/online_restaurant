@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 
+from marketplace.context_processors import get_cart_counter
 from marketplace.models import Cart
 from menu.models import Category, FoodItem
 from vendor.models import Vendor
@@ -25,9 +26,14 @@ def vendor_detail(request, vendor_slug):
         )
     )
     
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user)
+    else:
+        cart_items = None
     context = {
         'vendor': vendor,
         'categories': categories,
+        'cart_items': cart_items,
     }
     return render(request, 'marketplace/vendor_detail.html', context)
 
@@ -43,10 +49,10 @@ def add_to_cart(request, food_id=None):
                     checkCart = Cart.objects.get(user=request.user, fooditem=fooditem)
                     checkCart.quantity += 1
                     checkCart.save()
-                    return JsonResponse({'status': 'Success', 'message': 'Increased quantity'})
+                    return JsonResponse({'status': 'Success', 'message': 'Increased quantity', 'cart_counter': get_cart_counter(request), 'qty': checkCart.quantity}) # get_cart_counter to show total fooditem in cart
                 except:
                     checkCart = Cart.objects.create(user=request.user, fooditem=fooditem, quantity=1)
-                    return JsonResponse({'status': 'Success', 'message': 'Added food to the cart'})
+                    return JsonResponse({'status': 'Success', 'message': 'Added food to the cart', 'cart_counter': get_cart_counter(request), 'qty': checkCart.quantity})
             except:
                 return JsonResponse({'status': 'Failed', 'message': 'This food does not exist'})
         else:
