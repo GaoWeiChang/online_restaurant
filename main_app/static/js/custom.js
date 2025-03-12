@@ -73,24 +73,24 @@ function onPlaceChanged (){
 }
 
 $(document).ready(function(){
-    // click add into shopping cart button 
+    // add to cart
     $('.add_to_cart').on('click', function(e){
         e.preventDefault(); // ป้องกันการทำงานปกติของลิงก์ (เช่น การนำทางไปยัง URL ที่ระบุใน href) เมื่อมีการคลิก
         
         // data-* ใช้เพื่อเก็บข้อมูลส่วนตัวหรือข้อมูลเพิ่มเติมในองค์ประกอบ HTML
         food_id = $(this).attr('data-id'); // get data-id attrbute
         url = $(this).attr('data-url');
-        data = {
-            food_id: food_id,
-        }
+
         $.ajax({
             type: 'GET',
             url: url,
-            data: data,
             success: function(response){
-                // console.log(response.cart_counter['cart_count'])
-                $('#cart_counter').html(response.cart_counter['cart_count']); // print to console and click inspect to see cart_counter
-                $('#qty-'+food_id).html(response.qty);
+                if(response.status == 'Failed'){
+                    console.log(response)
+                }else{
+                    $('#cart_counter').html(response.cart_counter['cart_count']); // print to console and click inspect to see cart_counter
+                    $('#qty-'+food_id).html(response.qty);
+                }
             }
         })
     })
@@ -105,5 +105,27 @@ $(document).ready(function(){
         */
         $('#'+_id).html(_qty) // เปลี่ยนเนื้อหาของ element ที่มี id เดียวกัน 
         // ex. "#qty-101" เป็น CSS selector ที่เลือกองค์ประกอบที่มี id="qty-101" เเล้วกำหนดให้เนื้อหาภายในองค์ประกอบมีค่าเท่ากับ _qty
+    })
+
+    // derase cart
+    $('.decrease_cart').on('click', function(e){
+        e.preventDefault(); // ป้องกันการทำงานปกติของลิงก์ (เช่น การนำทางไปยัง URL ที่ระบุใน href) เมื่อมีการคลิก
+        
+        // data-* ใช้เพื่อเก็บข้อมูลส่วนตัวหรือข้อมูลเพิ่มเติมในองค์ประกอบ HTML
+        food_id = $(this).attr('data-id'); // get data-id attrbute
+        url = $(this).attr('data-url');
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(response){
+                if(response.status == 'Failed'){
+                    console.log(response)
+                }else{
+                    $('#cart_counter').html(response.cart_counter['cart_count']); // print to console and click inspect to see cart_counter
+                    $('#qty-'+food_id).html(response.qty);
+                }
+            }
+        })
     })
 });
