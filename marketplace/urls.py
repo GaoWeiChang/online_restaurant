@@ -4,6 +4,8 @@ from marketplace import views
 
 urlpatterns = [
     path('', views.marketplace, name='marketplace'),
+    
+    # vendor detail
     path('<slug:vendor_slug>/', views.vendor_detail, name='vendor_detail'),
     
     # add to cart
