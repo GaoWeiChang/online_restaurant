@@ -119,6 +119,7 @@ $(document).ready(function(){
         e.preventDefault(); // ป้องกันการทำงานปกติของลิงก์ (เช่น การนำทางไปยัง URL ที่ระบุใน href) เมื่อมีการคลิก
         
         // data-* ใช้เพื่อเก็บข้อมูลส่วนตัวหรือข้อมูลเพิ่มเติมในองค์ประกอบ HTML
+        cart_id = $(this).attr('id'); 
         food_id = $(this).attr('data-id'); // get data-id attrbute
         url = $(this).attr('data-url');
 
@@ -138,8 +139,53 @@ $(document).ready(function(){
                 else{
                     $('#cart_counter').html(response.cart_counter['cart_count']); // print to console and click inspect to see cart_counter
                     $('#qty-'+food_id).html(response.qty);
+
+                    if(window.location.pathname == '/cart/'){
+                        removeCartItem(response.qty, cart_id)
+                        checkEmptyCart();
+                    }
                 }
             }
         })
     })
+
+    // delete cart item
+    $('.delete_cart').on('click', function(e){
+        e.preventDefault(); // ป้องกันการทำงานปกติของลิงก์ (เช่น การนำทางไปยัง URL ที่ระบุใน href) เมื่อมีการคลิก
+        
+        cart_id = $(this).attr('data-id'); // get data-id attrbute
+        url = $(this).attr('data-url');
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(response){
+                if(response.status == 'Failed'){
+                    swal(response.message, '', 'error')
+                }
+                else{
+                    $('#cart_counter').html(response.cart_counter['cart_count']); // print to console and click inspect to see cart_counter
+                    swal(response.status, response.message, "success")
+
+                    removeCartItem(0, cart_id);
+                    checkEmptyCart();
+                }
+            }
+        })
+    })
+
+    // delete cart element if the qty is 0
+    function removeCartItem(qty, cart_id){
+        if(qty <= 0){
+            document.getElementById("cart-item-"+cart_id).remove()
+        }
+    }
+
+    // check if the cart is empty
+    function checkEmptyCart(){
+        var cart_counter = document.getElementById('cart_counter').innerHTML
+        if (cart_counter == 0) {
+            document.getElementById('empty-cart').style.display = 'block'; // enable display in UI
+        }
+    }
 });
