@@ -97,6 +97,13 @@ $(document).ready(function(){
                 else{
                     $('#cart_counter').html(response.cart_counter['cart_count']); // print to console and click inspect to see cart_counter
                     $('#qty-'+food_id).html(response.qty);
+                    console.log(response)
+                    // subtotal, tax and grand total
+                    applyCartAmounts(
+                        response.cart_amount['subtotal'],
+                        response.cart_amount['tax'],
+                        response.cart_amount['grand_total']
+                    )
                 }
             }
         })
@@ -140,6 +147,13 @@ $(document).ready(function(){
                     $('#cart_counter').html(response.cart_counter['cart_count']); // print to console and click inspect to see cart_counter
                     $('#qty-'+food_id).html(response.qty);
 
+                    // subtotal, tax and grand total
+                    applyCartAmounts(
+                        response.cart_amount['subtotal'],
+                        response.cart_amount['tax'],
+                        response.cart_amount['grand_total']
+                    )
+
                     if(window.location.pathname == '/cart/'){
                         removeCartItem(response.qty, cart_id)
                         checkEmptyCart();
@@ -166,6 +180,13 @@ $(document).ready(function(){
                 else{
                     $('#cart_counter').html(response.cart_counter['cart_count']); // print to console and click inspect to see cart_counter
                     swal(response.status, response.message, "success")
+                    
+                    // subtotal, tax and grand total
+                    applyCartAmounts(
+                        response.cart_amount['subtotal'],
+                        response.cart_amount['tax'],
+                        response.cart_amount['grand_total']
+                    )   
 
                     removeCartItem(0, cart_id);
                     checkEmptyCart();
@@ -186,6 +207,15 @@ $(document).ready(function(){
         var cart_counter = document.getElementById('cart_counter').innerHTML
         if (cart_counter == 0) {
             document.getElementById('empty-cart').style.display = 'block'; // enable display in UI
+        }
+    }
+
+    // apply cart amount
+    function applyCartAmounts(subtotal, tax, grandtotal){
+        if(window.location.pathname == '/cart/'){
+            $('#subtotal').html(subtotal)
+            $('#tax').html(tax)
+            $('#total').html(grandtotal)
         }
     }
 });
