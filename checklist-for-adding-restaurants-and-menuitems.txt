@@ -1,0 +1,14 @@
+Step 1:
+    Register 2 or more restaurants with any email address
+
+Step 2:
+    Verification email will be set to the restaurant email address, if the email address you entered is valid, then you can verify it with the activation link. Or you can simply verify the user from the admin panel by setting the is_active status to True.
+
+Step 3:
+    Login to newly created accounts -> go to My Restaurants tab, update the address to your surrounding locations.
+
+Step 4:
+    Go to Vendors-> set the is_approved status to True
+
+Step 5:
+    Go to menu builder tab, add some categories and food items
