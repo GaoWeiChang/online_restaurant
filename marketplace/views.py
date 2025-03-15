@@ -7,6 +7,7 @@ from menu.models import Category, FoodItem
 from vendor.models import Vendor
 from django.db.models import Prefetch
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 def marketplace(request):
     vendors = Vendor.objects.filter(is_approved=True, user__is_active=True)[:8] # [:8] = get 8 restaurants
@@ -116,8 +117,15 @@ def search(request):
     radius = request.GET['radius']
     keyword = request.GET['keyword']
     
-    vendors = Vendor.objects.filter(vendor_name__icontains=keyword, is_approved=True, user__is_active=True) # double underscore is allow to find more specific keyword 
+    
+    # get food name
+    fetch_vendor_by_fooditem = FoodItem.objects.filter(food_title__icontains=keyword, is_available=True).values_list('vendor', flat=True) # ดึงข้อมูลเฉพาะคอลัมน์ 'vendor' ออกมาเป็นลิสต์แบบเรียบ (flat list)
+    
+    # ใช้ Q เพื่อสร้างเงื่อนไขการค้นหาที่ซับซ้อนและยืดหยุ่น โดยเฉพาะเมื่อต้องการใช้ operator ทางตรรกศาสตร์ (logical operators) เช่น OR (|) หรือ AND (&)
+    vendors = Vendor.objects.filter(Q(id__in=fetch_vendor_by_fooditem) | Q(vendor_name__icontains=keyword, is_approved=True, user__is_active=True))
+    
     vendor_count = vendors.count()
+    
     context = {
         'vendors': vendors,
         'vendor_count': vendor_count,
