@@ -121,7 +121,7 @@ $(document).ready(function(){
         // ex. "#qty-101" เป็น CSS selector ที่เลือกองค์ประกอบที่มี id="qty-101" เเล้วกำหนดให้เนื้อหาภายในองค์ประกอบมีค่าเท่ากับ _qty
     })
 
-    // derase cart
+    // decrease cart
     $('.decrease_cart').on('click', function(e){
         e.preventDefault(); // ป้องกันการทำงานปกติของลิงก์ (เช่น การนำทางไปยัง URL ที่ระบุใน href) เมื่อมีการคลิก
         
