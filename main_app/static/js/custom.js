@@ -219,6 +219,7 @@ $(document).ready(function(){
         }
     }
 
+    // add opening hours
     $('.add_hour').on('click', function(e){
         e.preventDefault();
         var day = document.getElementById('id_day').value // find id from inspect the UI (required_id)
@@ -251,9 +252,9 @@ $(document).ready(function(){
                 success: function(response){ // response from views.py
                     if(response.status == 'success'){
                         if(response.is_closed == 'Closed'){ 
-                            html = '<tr> <td><b>'+ response.day +'</b></td> <td>Closed</td> <td><a href="#">Remove</a></td></tr>';
+                            html = '<tr id="hour-'+response.id+'"> <td><b>'+ response.day +'</b></td> <td>Closed</td> <td><a href="#" class="remove_hour" data-url="/restaurant/opening-hours/remove/'+ response.id +'/">Remove</a></td></tr>';
                         }else{
-                            html = '<tr> <td><b>'+ response.day +'</b></td> <td>'+ response.from_hour + ' - '+ response.to_hour + '</td> <td><a href="#">Remove</a></td></tr>';
+                            html = '<tr id="hour-'+response.id+'"> <td><b>'+ response.day +'</b></td> <td>'+ response.from_hour + ' - '+ response.to_hour + '</td> <td><a href="#" class="remove_hour" data-url="/restaurant/opening-hours/remove/'+ response.id +'/">Remove</a></td></tr>';
                         }
                         $(".opening_hours").append(html);
                         document.getElementById('opening_hours').reset(); // reset the form
@@ -265,7 +266,30 @@ $(document).ready(function(){
         }else{
             swal('Please fill all field', '', 'info')
         }
-    })
+    });
+
+    // remove opening hours
+    // Event Delegation - วิธีเขียนเเบบนี้ใช้เทคนิค event delegation ซึ่งทำให้สามารถจัดการกับองค์ประกอบที่สร้างขึ้นใหม่หลังจากที่โค้ด JavaScript ทำงานแล้ว
+    $(document).on('click', '.remove_hour', function(e){
+        e.preventDefault();
+        url = $(this).attr('data-url');
+        
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(response){
+                if(response.status == 'success'){
+                    document.getElementById('hour-'+response.id).remove();
+                }
+            }
+        })
+    });
+
+    // วิธีนี้จะผูกอีเวนต์โดยตรงกับองค์ประกอบที่มีคลาส .remove_hour ที่มีอยู่ในเวลาที่โค้ด JavaScript ทำงาน (เมื่อเพจโหลดครั้งแรก) เท่านั้น
+    // $('.remove_hour').on('click', function(e){
+
+    // });
+
     // document ready close
 
 });

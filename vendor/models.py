@@ -61,8 +61,8 @@ class OpeningHour(models.Model):
     
     # Meta class in Django models allows you to customize how your model interacts with the database and Django's systems
     class Meta:
-        ordering = ('day', 'from_hour')
-        unique_together = ('day', 'from_hour', 'to_hour')
+        ordering = ('day', '-from_hour') # sort day in ascending and from_hour in descending
+        unique_together = ('vendor', 'day', 'from_hour', 'to_hour') # unique together for vendor, day, from_hour, to_hour
         
     def __str__(self):
-        return self.get_day_display() # automatically created by Django for fields that have choices specified
+        return self.get_day_display() # get_day_display() is a method that returns the human-readable name for the field's current value
