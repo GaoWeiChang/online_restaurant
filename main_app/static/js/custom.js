@@ -226,8 +226,45 @@ $(document).ready(function(){
         var to_hour = document.getElementById('id_to_hour').value
         var is_closed = document.getElementById('id_is_closed').checked
         var csrf_token = $('input[name=csrfmiddlewaretoken]').val() // use name inside the input tag
+        var url = document.getElementById('add_hour_url').value
+        // console.log(day, from_hour, to_hour, is_closed, csrf_token)
 
-        console.log(day, from_hour, to_hour, is_closed, csrf_token)
+        if(is_closed){
+            is_closed = 'True'
+            condition = "day != ''"
+        }else{
+            is_closed = 'False'
+            condition = "day != '' && from_hour != '' && to_hour != ''"
+        }
+
+        if(eval(condition)){
+            $.ajax({ // ajax request
+                type: 'POST',
+                url: url,
+                data: {
+                    'day': day,
+                    'from_hour': from_hour,
+                    'to_hour': to_hour,
+                    'is_closed': is_closed,
+                    'csrfmiddlewaretoken': csrf_token,
+                },
+                success: function(response){ // response from views.py
+                    if(response.status == 'success'){
+                        if(response.is_closed == 'Closed'){ 
+                            html = '<tr> <td><b>'+ response.day +'</b></td> <td>Closed</td> <td><a href="#">Remove</a></td></tr>';
+                        }else{
+                            html = '<tr> <td><b>'+ response.day +'</b></td> <td>'+ response.from_hour + ' - '+ response.to_hour + '</td> <td><a href="#">Remove</a></td></tr>';
+                        }
+                        $(".opening_hours").append(html);
+                        document.getElementById('opening_hours').reset(); // reset the form
+                    }else{
+                        swal(response.message, '', 'error')
+                    }
+                }
+            })
+        }else{
+            swal('Please fill all field', '', 'info')
+        }
     })
     // document ready close
 
