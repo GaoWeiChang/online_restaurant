@@ -1,4 +1,4 @@
-from datetime import time
+from datetime import date, datetime, time
 from django.db import models
 
 from accounts.models import User, UserProfile
@@ -17,6 +17,30 @@ class Vendor(models.Model): # Vendor inherited from models.Model
 
     def __str__(self):
         return self.vendor_name
+    
+    def is_open(self):
+        # check current day and time
+        today_date = date.today()
+        today = today_date.isoweekday() # 1 = Monday, 2 = Tuesday, ..., 7 = Sunday
+        
+        current_opening_hours = OpeningHour.objects.filter(vendor=self, day=today)
+        now = datetime.now()
+        current_time = now.strftime('%H:%M:%S')
+        
+        is_open = None
+        print(current_opening_hours)
+        for i in current_opening_hours:
+            start = str(datetime.strptime(i.from_hour, '%I:%M %p').time())
+            end = str(datetime.strptime(i.to_hour, '%I:%M %p').time())
+            
+            # check if the current time is between the opening hours
+            if start<current_time and current_time<end:
+                is_open = True
+                break 
+            else:
+                is_open = False
+
+        return is_open
     
     # use *args and **kwargs to save parameter in save function
     def save(self, *args, **kwargs):
