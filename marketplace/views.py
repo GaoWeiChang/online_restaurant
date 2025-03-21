@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -32,14 +32,14 @@ def vendor_detail(request, vendor_slug):
         )
     )
     
-    opening_hours = OpeningHour.objects.filter(vendor=vendor).order_by('day', '-from_hour')
+    opening_hours = OpeningHour.objects.filter(vendor=vendor).order_by('day', 'from_hour')
 
     # check current day and time
     today_date = date.today()
     today = today_date.isoweekday() # 1 = Monday, 2 = Tuesday, ..., 7 = Sunday
     
     current_opening_hours = OpeningHour.objects.filter(vendor=vendor, day=today)
-    
+
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
     else:
