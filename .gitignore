@@ -5,3 +5,4 @@ main_app/__pycache__
 # database
 *.sqlite3
 GDAL-3.10.1-cp313-cp313-win_amd64.whl
+marketplace/__pycache__
