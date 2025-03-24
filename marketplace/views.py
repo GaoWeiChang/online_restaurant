@@ -13,6 +13,8 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D  # ``D`` is a shortcut for ``Distance``
 from django.contrib.gis.db.models.functions import Distance
 
+from orders.forms import OrderForm
+
 def marketplace(request):
     vendors = Vendor.objects.filter(is_approved=True, user__is_active=True)[:8] # [:8] = get 8 restaurants
     vendor_count = vendors.count()
@@ -157,3 +159,10 @@ def search(request):
     }
     
     return render(request, 'marketplace/listings.html', context)
+
+def checkout(request):
+    form = OrderForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'marketplace/checkout.html', context)
