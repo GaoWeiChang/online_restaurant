@@ -136,7 +136,7 @@ def activate(request, uidb64, token):
         messages.success(request, 'Your account is activated.')
         return redirect('myAccount')
     else:
-        print(user)
+        # print(user)
         messages.error(request, 'Invalid activation link')
         return redirect('myAccount')
 

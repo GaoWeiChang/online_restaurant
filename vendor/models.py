@@ -28,7 +28,7 @@ class Vendor(models.Model): # Vendor inherited from models.Model
         current_time = now.strftime('%H:%M:%S')
         
         is_open = None
-        print(current_opening_hours)
+        # print(current_opening_hours)
         for i in current_opening_hours:
             if not i.is_closed:
                 start = str(datetime.strptime(i.from_hour, '%I:%M %p').time())

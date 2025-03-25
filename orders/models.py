@@ -36,7 +36,7 @@ class Order(models.Model):
     email = models.EmailField(max_length=50)
     address = models.CharField(max_length=200)
     country = models.CharField(max_length=15, blank=True)
-    state = models.CharField(max_length=15, blank=True)
+    state = models.CharField(max_length=50, blank=True)
     city = models.CharField(max_length=50)
     pin_code = models.CharField(max_length=10)
     total = models.FloatField()

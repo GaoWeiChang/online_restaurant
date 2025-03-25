@@ -7,3 +7,6 @@ main_app/__pycache__
 GDAL-3.10.1-cp313-cp313-win_amd64.whl
 marketplace/__pycache__
 orders/__pycache__
+orders/migrations/__pycache__
+accounts/__pycache__
+vendor/__pycache__
