@@ -89,29 +89,23 @@
                                     
                                     <div id="menu-item-list-6272" class="menu-itam-list">
                                         <ul>
-                                                {% if cart_items %}
-                                                    {% for item in cart_items %}
-                                                        <li id="cart-item-{{item.id}}">
-                                                            <div class="image-holder"> <img src="{{ item.fooditem.image.url }}" alt=""></div>
-                                                            <div class="text-holder" style="width: calc(90% - 170px);">
-                                                                <h6>{{ item.fooditem }}</h6>
-                                                                <span>{{ item.fooditem.description }}</span>
-                                                                <a href="{% url 'vendor_detail' item.fooditem.vendor.vendor_slug %}" class="badge badge-warning">{{ item.fooditem.vendor }}</a>
-                                                            </div>
-
-                                                            <div class="quantity" style="display: inline-block; position: absolute; top: 50%; transform: translateY(-50%); margin-top: -10px;">
-                                                                <span>{{ item.quantity }} QTY</span>
-                                                            </div>
-                                                            <div class="price-holder">
-                                                                <span class="price">NT {{ item.fooditem.price }}</span>
-                                                            </div>
-                                                        </li>
-                                                    {% endfor %}
-                                                {% else %}
-                                                    <div class="text-center p-5">
-                                                        <h3>Cart is empty</h3>
+                                            {% for item in cart_items %}
+                                                <li id="cart-item-{{item.id}}">
+                                                    <div class="image-holder"> <img src="{{ item.fooditem.image.url }}" alt=""></div>
+                                                    <div class="text-holder" style="width: calc(90% - 170px);">
+                                                        <h6>{{ item.fooditem }}</h6>
+                                                        <span>{{ item.fooditem.description }}</span>
+                                                        <a href="{% url 'vendor_detail' item.fooditem.vendor.vendor_slug %}" class="badge badge-warning">{{ item.fooditem.vendor }}</a>
                                                     </div>
-                                                {% endif %}
+
+                                                    <div class="quantity" style="display: inline-block; position: absolute; top: 50%; transform: translateY(-50%); margin-top: -10px;">
+                                                        <span>{{ item.quantity }} QTY</span>
+                                                    </div>
+                                                    <div class="price-holder">
+                                                        <span class="price">NT {{ item.fooditem.price }}</span>
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
 
@@ -144,8 +138,25 @@
                                                     <span id="total">{{ grand_total }}</span>
                                                 </span>
                                             </li>
+                                            
+                                            <br>
+                                            <!-- select payment method -->
+                                            <h5>SELECT PAYMENT METHOD</h5>
+                                            <div class="payment-method">
+                                                <label>
+                                                    <input type="radio" name="payment_method" value="PayPal">
+                                                    <img src="{% static 'images/paypal_logo.png' %}" alt="PayPal" width="100">
+                                                </label>
+                                                &emsp;
+                                                <label>
+                                                    <input type="radio" name="payment_method" value="LinePay">
+                                                    <img src="{% static 'images/linepay.png' %}" alt="LinePay" width="100">
+                                                </label>
+                                            </div>
+                                            <span class="text-danger" id="payment-method-error"></span>
 
-                                            <button type="submit" class="btn btn-danger w-100 p-2 mt-3">PLACE ORDER</a>
+                                            <!-- select payment method -->
+                                            <button onclick="return payMethodConfirm();" type="submit" class="btn btn-danger w-100 p-2 mt-3">PLACE ORDER</a>
                                         </ul>
                                         <!-- end the form -->
                                         </form>
@@ -162,5 +173,28 @@
     </div>
 </div>
 <!-- Main Section End -->
+
+<script>
+    function payMethodConfirm(){
+        // เลือก <input> ที่มี name="payment_method" และถูก checked (เลือกอยู่) ดึงค่า value ของ <input> ที่ถูกเลือก
+        var payMethod = $('input[name="payment_method"]:checked').val(); 
+        if(!payMethod){
+            $('#payment-method-error').html('Please select payment method.');
+            return false;
+        } else {
+            var conf = confirm('Are you sure to place order with ' + payMethod + ' ?');
+            if(conf){
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    // ถ้ามีการเปลี่ยนเลือก payment method ให้ล้างข้อความ error
+    $('input[name="payment_method"]').on('change', function(){
+        $('#payment-method-error').html('');
+    });
+</script>
 
 {% endblock %}
