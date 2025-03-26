@@ -1,8 +1,9 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from marketplace.models import Cart
 from marketplace.context_processors import get_cart_amounts
 from orders.forms import OrderForm
-from orders.models import Order
+from orders.models import Order, Payment
 from .utils import generate_order_number
 import simplejson as json 
 
@@ -40,7 +41,46 @@ def place_order(request):
             order.order_number = generate_order_number(order.id) # generate after save to get order id
             order.save()
             
-            return redirect('place_order')
+            context = {
+                'order': order,
+                'cart_items': cart_items,
+            }
+            return render(request, 'orders/place_order.html', context)
         else:
             print(form.errors)
     return render(request, 'orders/place_order.html')
+
+
+def payments(request):
+    # check if the request is ajax or not
+    if(request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == 'POST'):
+        # store the payment details in the payment model
+        order_number = request.POST.get('order_number')
+        transaction_id = request.POST.get('transaction_id')
+        payment_method = request.POST.get('payment_method')
+        status = request.POST.get('status')
+
+        order = Order.objects.get(user=request.user, order_number=order_number)
+        payment = Payment(
+            user=request.user,
+            transaction_id=transaction_id,
+            payment_method=payment_method,
+            amount=order.total,
+            status=status
+        )
+        payment.save()
+        
+        # move the cart items to the ordered food model
+        order.payment = payment
+        order.is_ordered = True
+        order.save()
+        return HttpResponse('Saved')
+    
+        # send a confirmation email to the customer
+        
+        # send order received email to the vendor
+        
+        # clear the cart, if the payment is successful
+        
+        # return back to ajax with the status of the payment(success or failure)
+    return HttpResponse('Payments page')
