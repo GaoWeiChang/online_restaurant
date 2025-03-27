@@ -3,10 +3,13 @@ from django.shortcuts import render, redirect
 from marketplace.models import Cart
 from marketplace.context_processors import get_cart_amounts
 from orders.forms import OrderForm
-from orders.models import Order, Payment
+from orders.models import Order, OrderedFood, Payment
 from .utils import generate_order_number
+from accounts.utils import send_notification
 import simplejson as json 
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='login')
 def place_order(request):
     cart_items = Cart.objects.filter(user=request.user).order_by('created_at')
     cart_count = cart_items.count()
@@ -50,7 +53,7 @@ def place_order(request):
             print(form.errors)
     return render(request, 'orders/place_order.html')
 
-
+@login_required(login_url='login')
 def payments(request):
     # check if the request is ajax or not
     if(request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == 'POST'):
@@ -70,14 +73,35 @@ def payments(request):
         )
         payment.save()
         
-        # move the cart items to the ordered food model
+        # update order model
         order.payment = payment
         order.is_ordered = True
         order.save()
-        return HttpResponse('Saved')
     
-        # send a confirmation email to the customer
+        # move the cart items to the ordered food model
+        cart_items = Cart.objects.filter(user=request.user)
+        for item in cart_items:
+            ordered_food = OrderedFood() # create ordered_food in loop to save each item
+            ordered_food.order = order
+            ordered_food.payment = payment
+            ordered_food.user = request.user
+            ordered_food.fooditem = item.fooditem
+            ordered_food.quantity = item.quantity
+            ordered_food.price = item.fooditem.price
+            ordered_food.amount = item.fooditem.price * item.quantity # price * quantity
+            ordered_food.save()
         
+        # send a confirmation email to the customer
+        mail_subject = 'Thank you for your order'
+        mail_template = 'orders/order_confirmation_email.html'
+        context = {
+            'user': request.user,
+            'order': order,
+            'to_email': order.email,
+        }
+        send_notification(mail_subject, mail_template, context)
+        return HttpResponse('Data saved amd email sent')                
+                
         # send order received email to the vendor
         
         # clear the cart, if the payment is successful
