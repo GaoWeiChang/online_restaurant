@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from marketplace.models import Cart
 from marketplace.context_processors import get_cart_amounts
@@ -100,11 +100,53 @@ def payments(request):
             'to_email': order.email,
         }
         send_notification(mail_subject, mail_template, context)
-        return HttpResponse('Data saved amd email sent')                
                 
         # send order received email to the vendor
+        mail_subject = 'You have received a new order.'
+        mail_template = 'orders/new_order_received.html'
+        to_emails = []
+        for i in cart_items:
+            if i.fooditem.vendor.user.email not in to_emails:
+                to_emails.append(i.fooditem.vendor.user.email)
+        # print('to_email=>', to_emails)
+        context = {
+            'order': order,
+            'to_email': to_emails,
+        }
+        send_notification(mail_subject, mail_template, context)
         
         # clear the cart, if the payment is successful
+        # cart_items.delete()
         
         # return back to ajax with the status of the payment(success or failure)
+        response = {
+            'order_number': order_number,
+            'transaction_id': transaction_id,
+        }
+        return JsonResponse(response)
     return HttpResponse('Payments page')
+
+# แสดงหน้าสำเร็จการสั่งซื้อ
+def order_complete(request):
+    order_number = request.GET.get('order_no')
+    transaction_id = request.GET.get('trans_id')
+    
+    try:
+        order = Order.objects.get(order_number=order_number, payment__transaction_id=transaction_id, is_ordered=True)
+        ordered_food = OrderedFood.objects.filter(order=order)
+        
+        subtotal = 0
+        for item in ordered_food:
+            subtotal += (item.price * item.quantity)
+            
+        tax_data = json.loads(order.tax_data)
+        # print(tax_data)
+        context = {
+            'order': order,
+            'ordered_food': ordered_food,
+            'subtotal': subtotal,
+            'tax_data': tax_data,
+        }
+        return render(request, 'orders/order_complete.html', context)
+    except:
+        return render('home')
