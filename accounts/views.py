@@ -188,7 +188,14 @@ def customerDashboard(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_restaurant)
 def restaurantDashboard(request):
-    return render(request, 'accounts/restaurantDashboard.html')
+    vendor = Vendor.objects.get(user=request.user)
+    # __in ใช้เพื่อตรวจสอบว่าค่าของฟิลด์นั้นอยู่ในรายการ (list) ที่เรากำหนดหรือไม่
+    orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by('-created_at') # find the Order that has relationship with Vendor based on vendor.id
+    context = {
+        'orders': orders,
+        'orders_count': orders.count(),
+    }
+    return render(request, 'accounts/restaurantDashboard.html', context)
  
 def forgot_password(request):
     if request.method == 'POST':
