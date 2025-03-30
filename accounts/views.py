@@ -191,9 +191,12 @@ def restaurantDashboard(request):
     vendor = Vendor.objects.get(user=request.user)
     # __in ใช้เพื่อตรวจสอบว่าค่าของฟิลด์นั้นอยู่ในรายการ (list) ที่เรากำหนดหรือไม่
     orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by('-created_at') # find the Order that has relationship with Vendor based on vendor.id
+    recent_orders = orders[:5]
+    print(recent_orders)
     context = {
         'orders': orders,
         'orders_count': orders.count(),
+        'recent_orders': recent_orders,
     }
     return render(request, 'accounts/restaurantDashboard.html', context)
  

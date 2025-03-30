@@ -17,6 +17,11 @@ def place_order(request):
     if cart_count <= 0:
         return redirect('marketplace')
     
+    vendors_ids = []
+    for i in cart_items:
+        if i.fooditem.vendor.id not in vendors_ids:
+            vendors_ids.append(i.fooditem.vendor.id)
+    
     subtotal = get_cart_amounts(request)['subtotal']
     total_tax = get_cart_amounts(request)['tax']
     grand_total = get_cart_amounts(request)['grand_total']
@@ -43,12 +48,8 @@ def place_order(request):
             order.save() # save order first to get order id
             
             order.order_number = generate_order_number(order.id) # generate after save to get order id
+            order.vendors.add(*vendors_ids) # * = แยกข้อมูลในรายการ (list) หรือทูเพิล (tuple) ออกเป็นค่าแต่ละตัว
             order.save()
-            
-            # LinePay payment
-            # DATA = {
-            #     "amount": float(orde)
-            # }
             
             # foreign currency
             grand_total_usd = round(Decimal(grand_total * Decimal('0.030')), 2)
