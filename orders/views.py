@@ -8,6 +8,7 @@ from .utils import generate_order_number
 from accounts.utils import send_notification
 import simplejson as json 
 from django.contrib.auth.decorators import login_required
+from decimal import Decimal
 
 @login_required(login_url='login')
 def place_order(request):
@@ -44,9 +45,18 @@ def place_order(request):
             order.order_number = generate_order_number(order.id) # generate after save to get order id
             order.save()
             
+            # LinePay payment
+            # DATA = {
+            #     "amount": float(orde)
+            # }
+            
+            # foreign currency
+            grand_total_usd = round(Decimal(grand_total * Decimal('0.030')), 2)
+            
             context = {
                 'order': order,
                 'cart_items': cart_items,
+                'grand_total_usd': grand_total_usd,
             }
             return render(request, 'orders/place_order.html', context)
         else:

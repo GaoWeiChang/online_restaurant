@@ -178,5 +178,9 @@ GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'env\\Lib\\site-packages\\osgeo\\gdal
 # Paypal client id
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 
+# LinePay Channel ID and Channel Secret Key
+LINEPAY_CHANNEL_ID = config('LINEPAY_CHANNEL_ID')
+LINEPAY_SECRET_KEY = config('LINEPAY_SECRET_KEY')
+
 # set CORS 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
