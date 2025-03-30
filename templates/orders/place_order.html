@@ -101,14 +101,15 @@
                                                 <!-- Set up a container element for the button -->
                                                 <div id="paypal-button-container"></div>
                                             {% elif order.payment_method == 'LinePay' %}
-                                                <div class="btn btn-danger w-100">Pay with LinePay</div>
+                                                <div id="linepay_button">
+                                                    <div class="btn btn-danger w-100" id="linepay_button1">Pay with LinePay</div>
+                                                </div>
                                             {% endif %}
                                         </ul>
                                     </div>
 
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
                 </div>

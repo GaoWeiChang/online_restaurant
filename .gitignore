@@ -10,3 +10,4 @@ orders/__pycache__
 orders/migrations/__pycache__
 accounts/__pycache__
 vendor/__pycache__
+customers/__pycache__

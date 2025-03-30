@@ -4,6 +4,7 @@ from django.contrib import messages
 
 from accounts.forms import UserInfoForm, UserProfileForm
 from accounts.models import UserProfile
+from orders.models import Order
 
 @login_required(login_url='login')
 def cprofile(request): 
@@ -29,3 +30,11 @@ def cprofile(request):
         'profile': profile,
     }
     return render(request, 'customers/cprofile.html', context)
+
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
+    
+    context = {
+        'orders': orders,
+    }
+    return render(request, 'customers/my_orders.html', context)
