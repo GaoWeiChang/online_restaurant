@@ -1,9 +1,12 @@
+import json
 from django.db import models
 
 from accounts.models import User
 from marketplace.models import Cart
 from menu.models import FoodItem
 from vendor.models import Vendor
+
+request_object = ''
 
 class Payment(models.Model):
     PAYMENT_METHOD = (
@@ -59,6 +62,34 @@ class Order(models.Model):
 
     def order_placed_to(self):
         return ", ".join([str(i) for i in self.vendors.all()])
+    
+    def get_total_by_vendor(self):
+        vendor = Vendor.objects.get(user=request_object.user)
+        subtotal = 0
+        tax = 0
+        tax_dict = {}
+        if self.total_data:
+            total_data = json.loads(self.total_data)
+            data = total_data.get(str(vendor.id)) # print example {'2': {'subtotal': '1020.00', 'tax_type': {'vat': {'5': '51.00'}}}})
+            
+            for key, val in data.items():
+                subtotal += float(key)
+                val = val.replace("'", '"') # replace single quote with double quote to convert to JSON
+                val = json.loads(val) # print example {'subtotal': '1020.00', 'tax_type': {'vat': {'5': '51.00'}}}
+                tax_dict.update(val) 
+                
+                # calculate tax
+                for i in val:
+                    for j in val[i]:
+                        # print(val[i][j]) # print example {'vat': {'5': '51.00'}}
+                        tax += float(val[i][j])
+        grand_total = float(subtotal) + float(tax)
+        context = {
+            'subtotal': subtotal,
+            'grand_total': grand_total,
+            'tax_dict': tax_dict
+        }
+        return context
     
     def __str__(self):
         return self.order_number

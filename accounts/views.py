@@ -1,3 +1,4 @@
+import datetime
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages, auth
@@ -191,12 +192,25 @@ def restaurantDashboard(request):
     vendor = Vendor.objects.get(user=request.user)
     # __in ใช้เพื่อตรวจสอบว่าค่าของฟิลด์นั้นอยู่ในรายการ (list) ที่เรากำหนดหรือไม่
     orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by('-created_at') # find the Order that has relationship with Vendor based on vendor.id
-    recent_orders = orders[:5]
-    print(recent_orders)
+    recent_orders = orders[:10]
+    
+    # current month revenue
+    current_month = datetime.datetime.now().month # get current month
+    current_month_orders = orders.filter(vendors__in=[vendor.id], created_at__month=current_month) # filter order by current month
+    current_month_revenue = 0
+    for i in current_month_orders:
+        current_month_revenue += i.get_total_by_vendor()['grand_total']
+    
+    # total revenue
+    total_revenue = 0
+    for i in orders:
+        total_revenue += i.get_total_by_vendor()['grand_total'] # get total revenue by vendor
     context = {
         'orders': orders,
         'orders_count': orders.count(),
         'recent_orders': recent_orders,
+        'total_revenue': total_revenue,
+        'current_month_revenue': current_month_revenue,
     }
     return render(request, 'accounts/restaurantDashboard.html', context)
  
