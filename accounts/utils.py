@@ -34,6 +34,7 @@ def send_verification_email(request, user, mail_subject, email_template):
         })
     to_email = user.email # กำหนดอีเมล์ผู้รับ
     mail = EmailMessage(mail_subject, message, from_email, to=[to_email]) # สร้างออบเจ็กต์อีเมล์ด้วยหัวข้อ เนื้อหา และผู้รับ
+    mail.content_subtype = 'html' # กำหนดประเภทเนื้อหาเป็น HTML
     mail.send() # send email to user
     
 def send_notification(mail_subject, mail_template, context):
@@ -46,4 +47,5 @@ def send_notification(mail_subject, mail_template, context):
     else:
         to_email = context['to_email']
     mail = EmailMessage(mail_subject, message, from_email, to=to_email)
+    mail.content_subtype = 'html'
     mail.send()
